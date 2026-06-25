@@ -13,14 +13,17 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-Khởi tạo schema + dữ liệu mẫu (500 sản phẩm, 50 thương hiệu, 20 bài viết):
+Backend tự đồng bộ schema khi khởi động (`prisma db push` nếu chưa có
+migration, hoặc `migrate deploy` nếu đã commit migration). Sau khi container
+"healthy", nạp dữ liệu mẫu (500 sản phẩm, 50 thương hiệu, 20 bài viết):
 
 ```bash
-docker compose exec backend npx prisma migrate deploy
 docker compose exec backend npm run seed
 ```
 
-> Lần đầu, nếu chưa có migration: `docker compose exec backend npx prisma migrate dev --name init`.
+> Khuyến nghị cho production: tạo migration chính thức rồi commit để versioning:
+> `docker compose exec backend npx prisma migrate dev --name init`.
+> Khi thư mục `prisma/migrations` có nội dung, container sẽ tự dùng `migrate deploy`.
 
 Đánh chỉ mục Elasticsearch (tuỳ chọn — search vẫn chạy nhờ fallback Postgres):
 

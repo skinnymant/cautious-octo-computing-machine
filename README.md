@@ -22,10 +22,10 @@ cp .env.example .env
 docker compose up -d
 ```
 
-Sau khi container khởi động, chạy migrate + seed:
+Backend tự tạo bảng từ `schema.prisma` khi khởi động. Sau khi các container
+đã "healthy" (đợi ~30–60s), nạp dữ liệu mẫu (500 SP, 50 thương hiệu, 20 bài viết):
 
 ```bash
-docker compose exec backend npx prisma migrate deploy
 docker compose exec backend npm run seed
 ```
 

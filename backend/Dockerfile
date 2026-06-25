@@ -11,7 +11,9 @@ RUN npm install
 RUN npx prisma generate
 COPY . .
 EXPOSE 4000
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start:dev"]
+# If committed migrations exist, apply them; otherwise sync the schema directly
+# (lets the stack come up on a fresh clone without a generated migration).
+CMD ["sh", "-c", "if [ -n \"$(ls -A prisma/migrations 2>/dev/null)\" ]; then npx prisma migrate deploy; else npx prisma db push --skip-generate; fi && npm run start:dev"]
 
 # ─── build ──────────────────────────────────────────────
 FROM base AS build
@@ -30,4 +32,4 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/package.json ./package.json
 EXPOSE 4000
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main.js"]
+CMD ["sh", "-c", "if [ -n \"$(ls -A prisma/migrations 2>/dev/null)\" ]; then npx prisma migrate deploy; else npx prisma db push --skip-generate; fi && node dist/main.js"]
