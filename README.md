@@ -39,6 +39,23 @@ docker compose exec backend npm run seed
 
 Tài khoản admin mẫu (sau khi seed): `admin@techmart.vn` / `Admin@123`
 
+### Đổi cổng web (ví dụ 8086)
+
+Nếu cổng 80 đã bị chiếm, sửa 3 dòng trong `.env` rồi khởi động lại:
+
+```env
+WEB_PORT=8086
+NEXT_PUBLIC_API_URL=http://localhost:8086/api
+NEXT_PUBLIC_SITE_URL=http://localhost:8086
+```
+
+```bash
+docker compose up -d
+```
+
+Web sẽ chạy tại http://localhost:8086 (API: http://localhost:8086/api).
+Trên VPS nhớ mở firewall: `sudo ufw allow 8086/tcp`.
+
 ## Cấu trúc thư mục
 
 ```
